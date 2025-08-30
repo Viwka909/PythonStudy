@@ -1,6 +1,7 @@
 import json
 from datetime import datetime
 
+
 def add_mood_entry():
     try:
         name = input("Ваше имя: ")
@@ -33,4 +34,19 @@ def add_mood_entry():
     except Exception as e:
         print(f"Ошибка: {e}")
 
+def calculate_average_mood(filename):
+    try:
+        with open(filename, 'r', encoding='utf-8') as file:
+            diary = json.load(file)
+            result = 0
+            entries = 0
+            for entry in diary:
+                entries += 1
+                result+=entry['mood']
+            return result/entries
+    except FileNotFoundError:
+        print(f"Файл {filename} не найден!")
+        return []
+
 add_mood_entry()
+print("Среднее настроение - ",calculate_average_mood('mood_diary.json'))
