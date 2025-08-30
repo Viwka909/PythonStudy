@@ -8,10 +8,10 @@ books = [
     {"title": "1984", "author": "Оруэлл", "year": 1949}
 ]
 
-with open('books.json', 'w', encoding='utf-8') as file:
+with open('books.json', 'w', encoding='utf-8') as file: #создание файла
     json.dump(books, file, ensure_ascii=False, indent=2)
 
-def find_books_after_year(filename, year):
+def find_books_after_year(filename, year): #поиск в файле
     try:
         with open(filename, 'r', encoding='utf-8') as file:
             books = json.load(file)
@@ -20,11 +20,10 @@ def find_books_after_year(filename, year):
                 if book['year'] > year:
                     result.append(book)
             return result
-    except FileNotFoundError:
-        print(f"Файл {filename} не найден!")
+    except FileNotFoundError:   
+        print(f"Файл {filename} не найден!") #кетч ошибки
         return []
 
-# Использование
-recent_books = find_books_after_year('books.json', 1950)
+recent_books = find_books_after_year('books.json', 1950)#Поиск книг
 for book in recent_books:
     print(f"{book['title']} ({book['year']})")
