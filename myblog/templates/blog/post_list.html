@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %}Главная страница - Мой Блог{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <h1 class="mb-4">📝 Последние посты</h1>
+        
+        {% for post in posts %}
+        <article class="card mb-4">
+            <div class="card-body">
+                <h2 class="card-title">
+                    <a href="{% url 'post_detail' post.slug %}" class="text-decoration-none text-dark">
+                        {{ post.title }}
+                    </a>
+                </h2>
+                
+                <div class="text-muted mb-3">
+                    <small>
+                        <i class="fas fa-calendar"></i> Опубликовано: {{ post.created_at|date:"d.m.Y" }} | 
+                        <i class="fas fa-user"></i> Автор: {{ post.author.username }} | 
+                        <i class="fas fa-folder"></i> Категория: 
+                        <a href="{% url 'category_posts' post.category.slug %}" class="text-decoration-none">
+                            {{ post.category.name }}
+                        </a>
+                    </small>
+                </div>
+                
+                <p class="card-text">{{ post.content|truncatewords:50|linebreaks }}</p>
+                
+                <div class="d-flex justify-content-between align-items-center">
+                    <a href="{% url 'post_detail' post.slug %}" class="btn btn-primary">
+                        <i class="fas fa-readme"></i> Читать далее
+                    </a>
+                    <span class="text-muted">
+                        <i class="fas fa-comments"></i> {{ post.comments.count }} комментариев
+                    </span>
+                </div>
+            </div>
+        </article>
+        {% empty %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i> Пока нет опубликованных постов.
+        </div>
+        {% endfor %}
+
+        <!-- Пагинация -->
+        {% if is_paginated %}
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                        <i class="fas fa-chevron-left"></i> Назад
+                    </a>
+                </li>
+                {% endif %}
+                
+                <li class="page-item disabled">
+                    <span class="page-link">
+                        Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
+                    </span>
+                </li>
+                
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                        Вперед <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+    
+    <div class="col-lg-4">
+        <!-- Боковая панель -->
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-folder"></i> Категории</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    {% for category in categories %}
+                    <li>
+                        <a href="{% url 'category_posts' category.slug %}" class="text-decoration-none">
+                            <i class="fas fa-folder"></i> {{ category.name }}
+                            <span class="badge bg-secondary">{{ category.post_set.count }}</span>
+                        </a>
+                    </li>
+                    {% empty %}
+                    <li>Нет категорий</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5><i class="fas fa-info-circle"></i> О блоге</h5>
+            </div>
+            <div class="card-body">
+                <p>Добро пожаловать в мой блог! Здесь я делюсь своими мыслями и опытом.</p>
+                <a href="{% url 'about' %}" class="btn btn-outline-primary btn-sm">
+                    Узнать больше
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

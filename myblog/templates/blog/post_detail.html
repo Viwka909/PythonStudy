@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ post.title }} - Мой Блог{% endblock %}
+
+{% block content %}
+<article>
+    <div class="card">
+        <div class="card-body">
+            <h1 class="card-title">{{ post.title }}</h1>
+            
+            <div class="text-muted mb-4">
+                <small>
+                    <i class="fas fa-calendar"></i> {{ post.created_at|date:"d.m.Y H:i" }} | 
+                    <i class="fas fa-user"></i> {{ post.author.username }} | 
+                    <i class="fas fa-folder"></i> 
+                    <a href="{% url 'category_posts' post.category.slug %}" class="text-decoration-none">
+                        {{ post.category.name }}
+                    </a>
+                </small>
+            </div>
+            
+            <div class="post-content">
+                {{ post.content|linebreaks }}
+            </div>
+            
+            <div class="mt-4">
+                <a href="{% url 'post_list' %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Назад к списку
+                </a>
+            </div>
+        </div>
+    </div>
+</article>
+
+<!-- Комментарии -->
+<section class="mt-5">
+    <div class="card">
+        <div class="card-header">
+            <h4><i class="fas fa-comments"></i> Комментарии ({{ post.comments.count }})</h4>
+        </div>
+        <div class="card-body">
+            {% for comment in post.comments.all %}
+            <div class="comment mb-3 border-bottom pb-3">
+                <div class="d-flex justify-content-between">
+                    <strong>{{ comment.author.username }}</strong>
+                    <small class="text-muted">{{ comment.created_at|date:"d.m.Y H:i" }}</small>
+                </div>
+                <p class="mb-0">{{ comment.text|linebreaks }}</p>
+            </div>
+            {% empty %}
+            <p class="text-muted">Пока нет комментариев. Будьте первым!</p>
+            {% endfor %}
+            
+            <!-- Форма комментария -->
+            <div class="mt-4">
+                <h5>Добавить комментарий</h5>
+                <form method="post" action="{% url 'add_comment' post.slug %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <textarea name="text" class="form-control" rows="3" 
+                                  placeholder="Ваш комментарий..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-paper-plane"></i> Отправить
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
