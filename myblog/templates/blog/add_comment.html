@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}Добавить комментарий - Мой Блог{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h4>Добавить комментарий к посту "{{ post.title }}"</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.text.id_for_label }}" class="form-label">Ваш комментарий:</label>
+                        {{ form.text }}
+                        {% if form.text.errors %}
+                        <div class="text-danger">
+                            {% for error in form.text.errors %}
+                            <small>{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-paper-plane"></i> Отправить комментарий
+                        </button>
+                        <a href="{% url 'post_detail' post.slug %}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Отмена
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Добавляем классы Bootstrap к полям формы
+document.addEventListener('DOMContentLoaded', function() {
+    const textarea = document.querySelector('textarea');
+    if (textarea) {
+        textarea.classList.add('form-control');
+    }
+});
+</script>
+{% endblock %}
