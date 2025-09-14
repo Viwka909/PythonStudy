@@ -1,0 +1,14 @@
+*.pyc
+__pycache__/
+*.sqlite3
+.env
+.env.prod
+staticfiles/
+media/
+.DS_Store
+.coverage
+htmlcov/
+.venv/
+venv/
+env/
+.vercel
